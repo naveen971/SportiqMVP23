@@ -1,229 +1,201 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../../core/auth/AuthProvider';
 import { ROUTES } from '../../../../routing/routes';
+import { createTournament, CreateTournamentPayload } from '../../../tournaments/services/tournamentService';
+import { SPORTS_LIST } from '../../../../shared/constants/sports';
 import styles from './CreateTournamentScreen.module.css';
 
-// STATIC DEMO DATA: This screen uses hardcoded form elements matching Stitch ID d915428c02284593997022652a8fed94
 export function CreateTournamentScreen() {
   const navigate = useNavigate();
-  
+  const { user } = useAuth();
+
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [sport, setSport] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [error, setError] = useState('');
+  const [location, setLocation] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    if (isSubmitting) return;
+    if (!user) return;
 
-    if (startDate && endDate && endDate < startDate) {
-      setError('End date cannot be before start date.');
-      return;
-    }
+    setIsSubmitting(true);
+    setError(null);
 
-    if (startDate) {
-      const startYear = parseInt(startDate.split('-')[0] || '', 10);
-      if (startYear < 2026 || startYear > 2028) {
-        setError('Tournament start year must be between 2026 and 2028.');
-        return;
+    try {
+      // --- Date validation (same pattern as CreateEventScreen) ---
+      const startDateObj = new Date(startDate);
+      if (isNaN(startDateObj.getTime())) {
+        throw new Error('Invalid start date.');
       }
-    }
 
-    if (endDate) {
-      const endYear = parseInt(endDate.split('-')[0] || '', 10);
-      if (endYear < 2026 || endYear > 2028) {
-        setError('Tournament end year must be between 2026 and 2028.');
-        return;
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+
+      const startDateOnly = new Date(startDate);
+      startDateOnly.setHours(0, 0, 0, 0);
+
+      if (startDateOnly < now) {
+        throw new Error('Start date cannot be in the past.');
       }
-    }
 
-    // Success static demo flow
-    console.log('Tournament valid');
+      const currentYear = now.getFullYear();
+      const startYear = startDateOnly.getFullYear();
+      if (startYear < currentYear || startYear > currentYear + 5) {
+        throw new Error(`Start year must be between ${currentYear} and ${currentYear + 5}.`);
+      }
+
+      if (endDate) {
+        const endDateOnly = new Date(endDate);
+        endDateOnly.setHours(0, 0, 0, 0);
+
+        if (endDateOnly < startDateOnly) {
+          throw new Error('End date cannot be before start date.');
+        }
+
+        const endYear = endDateOnly.getFullYear();
+        if (endYear < currentYear || endYear > currentYear + 5) {
+          throw new Error(`End year must be between ${currentYear} and ${currentYear + 5}.`);
+        }
+      }
+
+      const payload: CreateTournamentPayload = {
+        title,
+        description: description || undefined,
+        sport: sport || undefined,
+        start_date: startDate,
+        end_date: endDate || undefined,
+        location: location || undefined,
+        organiser_id: user.id,
+      };
+
+      await createTournament(payload);
+      navigate(ROUTES.TOURNAMENTS);
+    } catch (err: any) {
+      setError(err.message || 'Failed to create tournament. Please try again.');
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <main className={styles.container}>
       <div className={styles.header}>
-        <button 
-          className={styles.backBtn}
-          onClick={() => navigate(ROUTES.HOME)}
-        >
+        <button type="button" className={styles.backBtn} onClick={() => navigate(-1)}>
           <span className={`material-symbols-outlined ${styles.backIcon}`}>arrow_back</span>
-          <span>Back to Dashboard</span>
+          <span>Back</span>
         </button>
         <h1 className={styles.title}>Create Tournament</h1>
-        <p className={styles.subtitle}>Step 1 of 3: Basic Information</p>
       </div>
 
-      <div className={styles.progressContainer}>
-        <div className={styles.progressFill}></div>
-        <div className={styles.progressEmpty}></div>
-        <div className={styles.progressEmpty}></div>
-      </div>
+      {error && (
+        <div className={styles.errorAlert}>
+          <span className="material-symbols-outlined">error</span>
+          <p>{error}</p>
+        </div>
+      )}
 
       <form className={styles.formContainer} onSubmit={handleSubmit}>
-        {error && <div className={styles.errorAlert}>{error}</div>}
-        <div className={styles.uploadBanner}>
-          <span className={`material-symbols-outlined ${styles.uploadIcon}`}>add_photo_alternate</span>
-          <span className={styles.uploadTitle}>Upload Tournament Banner</span>
-          <span className={styles.uploadSubtitle}>Recommended size: 1200x400px</span>
+        {/* Tournament Name */}
+        <div className={styles.fieldGroup}>
+          <label className={styles.label} htmlFor="tourney-title">
+            Tournament Name <span className={styles.required}>*</span>
+          </label>
+          <input
+            id="tourney-title"
+            type="text"
+            className={styles.input}
+            placeholder="e.g. Summer Cup 2026"
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+            required
+          />
         </div>
 
-        <div className={styles.formGrid}>
-          <div className={`${styles.fieldGroup} ${styles.colSpanFull}`}>
-            <label className={styles.label}>
-              Tournament Name <span className={styles.required}>*</span>
+        {/* Sport */}
+        <div className={styles.fieldGroup}>
+          <label className={styles.label} htmlFor="tourney-sport">
+            Sport <span className={styles.required}>*</span>
+          </label>
+          <select
+            id="tourney-sport"
+            className={styles.select}
+            value={sport}
+            onChange={e => setSport(e.target.value)}
+            required
+          >
+            <option value="" disabled>Select a sport</option>
+            {SPORTS_LIST.map(s => (
+              <option key={s.id} value={s.id}>{s.name}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Date Row */}
+        <div className={styles.dateRow}>
+          <div className={styles.fieldGroup}>
+            <label className={styles.label} htmlFor="tourney-start-date">
+              Start Date <span className={styles.required}>*</span>
             </label>
-            <input 
-              type="text" 
-              className={styles.input} 
-              placeholder="e.g. Summer Cup 2024" 
+            <input
+              id="tourney-start-date"
+              type="date"
+              className={styles.input}
+              value={startDate}
+              onChange={e => setStartDate(e.target.value)}
+              required
             />
           </div>
-
           <div className={styles.fieldGroup}>
-            <label className={styles.label}>
-              Sport <span className={styles.required}>*</span>
-            </label>
-            <div className={styles.inputWrapper}>
-              <select className={styles.select} defaultValue="">
-                <option value="" disabled>Select a sport</option>
-                <option value="football">Football</option>
-                <option value="basketball">Basketball</option>
-                <option value="tennis">Tennis</option>
-                <option value="volleyball">Volleyball</option>
-              </select>
-              <span className={`material-symbols-outlined ${styles.selectIcon}`}>expand_more</span>
-            </div>
-          </div>
-
-          <div className={styles.fieldGroup}>
-            <label className={styles.label}>Age Category</label>
-            <div className={styles.inputWrapper}>
-              <select className={styles.select} defaultValue="open">
-                <option value="open">Open (All Ages)</option>
-                <option value="u18">Under 18</option>
-                <option value="u16">Under 16</option>
-                <option value="adult">Adult (18+)</option>
-                <option value="senior">Senior (35+)</option>
-              </select>
-              <span className={`material-symbols-outlined ${styles.selectIcon}`}>expand_more</span>
-            </div>
+            <label className={styles.label} htmlFor="tourney-end-date">End Date</label>
+            <input
+              id="tourney-end-date"
+              type="date"
+              className={styles.input}
+              value={endDate}
+              min={startDate || undefined}
+              onChange={e => setEndDate(e.target.value)}
+            />
           </div>
         </div>
 
-        <div className={styles.formGrid}>
-          <div className={`${styles.fieldGroup} ${styles.colSpanFull}`}>
-            <label className={styles.label}>Primary Venue</label>
-            <div className={styles.inputWrapper}>
-              <span className={`material-symbols-outlined ${styles.inputIcon}`}>location_on</span>
-              <input 
-                type="text" 
-                className={`${styles.input} ${styles.inputWithIcon}`} 
-                placeholder="Search for sports complex, stadium, or address..." 
-              />
-            </div>
-          </div>
-
-          <div className={`${styles.fieldGroup} ${styles.colSpanFull}`}>
-            <label className={styles.label}>
-              Registration Window <span className={styles.required}>*</span>
-            </label>
-            <div className={styles.dateGroup}>
-              <div className={styles.inputWrapper}>
-                <span className={`material-symbols-outlined ${styles.inputIcon}`}>calendar_today</span>
-                <input 
-                  type="date" 
-                  className={`${styles.input} ${styles.inputWithIcon}`}
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  min="2026-01-01"
-                  max="2028-12-31"
-                  required
-                />
-              </div>
-              <span className={styles.dateSeparator}>to</span>
-              <div className={styles.inputWrapper}>
-                <span className={`material-symbols-outlined ${styles.inputIcon}`}>calendar_today</span>
-                <input 
-                  type="date" 
-                  className={`${styles.input} ${styles.inputWithIcon}`}
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  min={startDate || "2026-01-01"}
-                  max="2028-12-31"
-                  required
-                />
-              </div>
-            </div>
-          </div>
+        {/* Location */}
+        <div className={styles.fieldGroup}>
+          <label className={styles.label} htmlFor="tourney-location">Location</label>
+          <input
+            id="tourney-location"
+            type="text"
+            className={styles.input}
+            placeholder="e.g. Main Stadium, Chennai"
+            value={location}
+            onChange={e => setLocation(e.target.value)}
+          />
         </div>
 
-        <div className={styles.formatSection}>
-          <label className={styles.label}>
-            Tournament Format <span className={styles.required}>*</span>
-          </label>
-          <div className={styles.formatGrid}>
-            <label className={styles.radioLabel}>
-              <input type="radio" name="format" value="league" className={styles.radioInput} defaultChecked />
-              <div className={styles.radioCard}>
-                <span className={`material-symbols-outlined ${styles.radioIcon}`}>format_list_numbered</span>
-                <div>
-                  <div className={styles.radioTitle}>League</div>
-                  <div className={styles.radioDesc}>Round-robin format where all teams play each other.</div>
-                </div>
-              </div>
-            </label>
-            
-            <label className={styles.radioLabel}>
-              <input type="radio" name="format" value="knockout" className={styles.radioInput} />
-              <div className={styles.radioCard}>
-                <span className={`material-symbols-outlined ${styles.radioIcon}`}>account_tree</span>
-                <div>
-                  <div className={styles.radioTitle}>Knockout</div>
-                  <div className={styles.radioDesc}>Single elimination bracket tournament.</div>
-                </div>
-              </div>
-            </label>
-
-            <label className={styles.radioLabel}>
-              <input type="radio" name="format" value="group" className={styles.radioInput} />
-              <div className={styles.radioCard}>
-                <span className={`material-symbols-outlined ${styles.radioIcon}`}>grid_view</span>
-                <div>
-                  <div className={styles.radioTitle}>Group Stage</div>
-                  <div className={styles.radioDesc}>Mini-leagues followed by knockout rounds.</div>
-                </div>
-              </div>
-            </label>
-
-            <label className={styles.radioLabel}>
-              <input type="radio" name="format" value="hybrid" className={styles.radioInput} />
-              <div className={styles.radioCard}>
-                <span className={`material-symbols-outlined ${styles.radioIcon}`}>shuffle</span>
-                <div>
-                  <div className={styles.radioTitle}>Hybrid</div>
-                  <div className={styles.radioDesc}>Custom structure mixing multiple formats.</div>
-                </div>
-              </div>
-            </label>
-          </div>
-        </div>
-
-        <div className={`${styles.fieldGroup} ${styles.maxTeamsGroup}`}>
-          <label className={styles.label}>Maximum Teams</label>
-          <input 
-            type="number" 
-            className={styles.input} 
-            min="2" 
-            placeholder="e.g. 16" 
+        {/* Description */}
+        <div className={styles.fieldGroup}>
+          <label className={styles.label} htmlFor="tourney-description">Description</label>
+          <textarea
+            id="tourney-description"
+            className={styles.textarea}
+            placeholder="Provide details about the tournament..."
+            value={description}
+            onChange={e => setDescription(e.target.value)}
+            rows={4}
           />
         </div>
 
         <div className={styles.actions}>
-          <button type="button" className={styles.btnSecondary}>Save Draft</button>
-          <button type="submit" className={styles.btnPrimary}>
-            Continue
-            <span className={`material-symbols-outlined ${styles.btnIcon}`}>arrow_forward</span>
+          <button type="button" className={styles.btnSecondary} onClick={() => navigate(-1)} disabled={isSubmitting}>
+            Cancel
+          </button>
+          <button type="submit" className={styles.btnPrimary} disabled={isSubmitting}>
+            {isSubmitting ? 'Creating...' : 'Create Tournament'}
           </button>
         </div>
       </form>

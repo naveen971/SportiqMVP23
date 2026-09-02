@@ -32,6 +32,9 @@ import {
   EventDetailsScreen
 } from '../modules/events/screens';
 
+import { TournamentsListScreen } from '../modules/tournaments/screens/TournamentsListScreen/TournamentsListScreen';
+import { CreateTournamentScreen } from '../modules/dashboard/screens/CreateTournamentScreen/CreateTournamentScreen';
+
 import { NotificationsScreen } from '../modules/notifications/screens';
 import { SettingsScreen } from '../modules/settings/screens';
 import { MessagesScreen, PrivateChatScreen } from '../modules/messages/screens';
@@ -263,7 +266,7 @@ export function AppRouter() {
         <Route path={ROUTES.EVENT_DETAILS} element={<ProtectedRoute><AppLayout><EventDetailsScreen /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.CREATE_EVENT} element={<ProtectedRoute><CreateEventScreen /></ProtectedRoute>} />
         
-        <Route path={ROUTES.CREATE_TOURNAMENT} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Coming Soon" description="// TODO: replace with real Create Tournament screen" /></AppLayout></ProtectedRoute>} />
+        <Route path={ROUTES.CREATE_TOURNAMENT} element={<ProtectedRoute><CreateTournamentScreen /></ProtectedRoute>} />
         <Route path={ROUTES.APPROVALS} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Approvals" description="// TODO: replace with real Approvals screen" /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.TEAM_MANAGEMENT} element={<ProtectedRoute><AppLayout><MyCoachesScreen /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.ATHLETE_DIRECTORY} element={<ProtectedRoute><AppLayout><CoachAthleteSearchScreen /></AppLayout></ProtectedRoute>} />
@@ -277,7 +280,7 @@ export function AppRouter() {
         <Route path={ROUTES.ACHIEVEMENTS_EDIT} element={<ProtectedRoute><AchievementForm /></ProtectedRoute>} />
         
         <Route path={ROUTES.SCHEDULE} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Schedule" description="// TODO: replace with real Schedule screen" /></AppLayout></ProtectedRoute>} />
-        <Route path={ROUTES.TOURNAMENTS} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Tournaments" description="// TODO: replace with real Tournaments screen" /></AppLayout></ProtectedRoute>} />
+        <Route path={ROUTES.TOURNAMENTS} element={<ProtectedRoute><AppLayout><TournamentsListScreen /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.ANALYTICS} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Coming Soon" description="// TODO: replace with real Analytics screen" /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.POSTS} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Posts" description="// TODO: replace with real Posts screen" /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.NETWORK} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Network" description="// TODO: replace with real Network screen" /></AppLayout></ProtectedRoute>} />
