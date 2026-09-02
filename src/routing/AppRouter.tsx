@@ -21,7 +21,8 @@ import {
   GovernmentAnalyticsScreen,
   AssignTrainingScreen,
   AnnouncementsScreen,
-  CreatePostScreen
+  CreatePostScreen,
+  MyCoachesScreen
 } from '../modules/dashboard/screens';
 
 
@@ -264,7 +265,7 @@ export function AppRouter() {
         
         <Route path={ROUTES.CREATE_TOURNAMENT} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Coming Soon" description="// TODO: replace with real Create Tournament screen" /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.APPROVALS} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Approvals" description="// TODO: replace with real Approvals screen" /></AppLayout></ProtectedRoute>} />
-        <Route path={ROUTES.TEAM_MANAGEMENT} element={<ProtectedRoute><AppLayout><PlaceholderScreen title="Coming Soon" description="// TODO: replace with real Team Management screen" /></AppLayout></ProtectedRoute>} />
+        <Route path={ROUTES.TEAM_MANAGEMENT} element={<ProtectedRoute><AppLayout><MyCoachesScreen /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.ATHLETE_DIRECTORY} element={<ProtectedRoute><AppLayout><CoachAthleteSearchScreen /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.ATHLETE_PUBLIC_PROFILE} element={<ProtectedRoute><AppLayout><AthletePublicProfileScreen /></AppLayout></ProtectedRoute>} />
         <Route path={ROUTES.ORGANIZATION_DIRECTORY} element={<ProtectedRoute><AppLayout><OrganizationDirectoryScreen /></AppLayout></ProtectedRoute>} />

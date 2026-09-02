@@ -184,6 +184,7 @@ export interface ProfileData {
   years_of_experience: number | null;
   onboarding_complete: boolean;
   avatar_url: string | null;
+  organisation_id?: string | null;
 }
 
 export async function getOwnProfile(userId: string): Promise<ProfileData | null> {
@@ -216,6 +217,9 @@ export interface EditProfilePayload {
   currentTeam?: string;
   highlightReelUrl?: string;
   instagramUsername?: string;
+  
+  // New mapped field
+  organisationId?: string | null;
 }
 
 /**
@@ -237,6 +241,7 @@ export async function updateEditProfile(
       selected_sports: selectedSports,
       primary_position: payload.position || null,
       bio: payload.bio || null,
+      organisation_id: payload.organisationId !== undefined ? payload.organisationId : undefined,
     })
     .eq('id', userId);
 
@@ -258,3 +263,30 @@ export async function updateEditProfile(
   }
 }
 
+export async function getOrganisers(): Promise<{ id: string; full_name: string }[]> {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('id, full_name')
+    .eq('role', 'organiser')
+    .order('full_name', { ascending: true });
+
+  if (error) {
+    console.error('Failed to fetch organisers:', error);
+    return [];
+  }
+  return data || [];
+}
+
+export async function getCoachesByOrganisation(orgId: string): Promise<ProfileData[]> {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('role', 'coach')
+    .eq('organisation_id', orgId);
+
+  if (error) {
+    console.error('Failed to fetch coaches for organisation:', error);
+    return [];
+  }
+  return data as ProfileData[];
+}

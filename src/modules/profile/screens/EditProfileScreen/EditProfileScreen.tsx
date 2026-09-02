@@ -7,6 +7,7 @@ import {
   getOwnProfile,
   updateEditProfile,
   updateAvatarUrl,
+  getOrganisers,
 } from '../../services/profileService';
 import styles from './EditProfileScreen.module.css';
 
@@ -34,6 +35,9 @@ export function EditProfileScreen() {
   
   const [highlightReelUrl, setHighlightReelUrl] = useState(''); // Unmapped
   const [instagramUsername, setInstagramUsername] = useState(''); // Unmapped
+  const [organisationId, setOrganisationId] = useState(''); // Only for Coaches
+  
+  const [organisersList, setOrganisersList] = useState<{ id: string; full_name: string }[]>([]);
   
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -64,6 +68,15 @@ export function EditProfileScreen() {
           if (profileData.avatar_url) {
             setAvatarUrl(profileData.avatar_url);
           }
+          
+          if (profileData.organisation_id) {
+            setOrganisationId(profileData.organisation_id);
+          }
+        }
+        
+        if (user.role === UserRole.Coach) {
+          const orgs = await getOrganisers();
+          setOrganisersList(orgs);
         }
       } catch (err: any) {
         setError(err.message || 'Failed to load profile data.');
@@ -129,7 +142,8 @@ export function EditProfileScreen() {
         dateOfBirth,
         currentTeam,
         highlightReelUrl,
-        instagramUsername
+        instagramUsername,
+        organisationId: organisationId || undefined
       });
       
       // 3. Navigate back to profile
@@ -326,6 +340,30 @@ export function EditProfileScreen() {
                 />
               </div>
             </>
+          )}
+
+          {user?.role === UserRole.Coach && (
+            <div className={styles.formGroupFull}>
+              <label className={styles.label}>Organisation</label>
+              <div className={styles.inputWrapper}>
+                <select 
+                  className={styles.input} 
+                  style={{ appearance: 'none', paddingRight: '40px' }}
+                  value={organisationId}
+                  onChange={e => setOrganisationId(e.target.value)}
+                  disabled={organisersList.length === 0}
+                >
+                  <option value="">Select an organisation</option>
+                  {organisersList.map(org => (
+                    <option key={org.id} value={org.id}>{org.full_name}</option>
+                  ))}
+                </select>
+                <span className={`material-symbols-outlined ${styles.iconRight}`}>expand_more</span>
+              </div>
+              {organisersList.length === 0 && (
+                <p className={styles.helperText} style={{ color: 'var(--color-error)' }}>No organisations available yet.</p>
+              )}
+            </div>
           )}
           
           <div className={styles.formGroupFull}>
