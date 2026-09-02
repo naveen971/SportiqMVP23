@@ -14,4 +14,5 @@ export const REGION_LIST: Region[] = [
   { id: 'delhi', name: 'Delhi' },
   { id: 'hyderabad', name: 'Hyderabad' },
   { id: 'kolkata', name: 'Kolkata' },
+  { id: 'karur', name: 'Karur' },
 ];
