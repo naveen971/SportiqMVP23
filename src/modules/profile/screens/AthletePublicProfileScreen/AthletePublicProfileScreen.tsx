@@ -17,6 +17,9 @@ interface AthleteProfile {
   location: string | null;
   primary_position: string | null;
   bio: string | null;
+  height_cm: number | null;
+  weight_kg: number | null;
+  dominant_foot: string | null;
 }
 
 function formatSportName(sportId: string | undefined): string {
@@ -48,7 +51,7 @@ export function AthletePublicProfileScreen() {
       try {
         const { data, error } = await supabase
           .from('profiles')
-          .select('id, full_name, role, selected_sports, age, location, primary_position, bio')
+          .select('id, full_name, role, selected_sports, age, location, primary_position, bio, height_cm, weight_kg, dominant_foot')
           .eq('id', id)
           .single();
 
@@ -259,6 +262,43 @@ export function AthletePublicProfileScreen() {
                 </div>
                 <div className={styles.card}>
                   <p className={styles.bioText}>{profile.bio}</p>
+                </div>
+              </section>
+            )}
+
+            {/* Physical Profile */}
+            {(profile.age || profile.height_cm || profile.weight_kg || profile.dominant_foot) && (
+              <section className={styles.section} aria-labelledby="physical-title">
+                <div className={styles.sectionHeader}>
+                  <h2 id="physical-title" className={styles.sectionTitle}>Physical Profile</h2>
+                </div>
+                <div className={styles.card}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-4)' }}>
+                    {profile.age && (
+                      <div>
+                        <p style={{ margin: 0, fontFamily: 'var(--font-family-body-sm)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Age</p>
+                        <p style={{ margin: '4px 0 0', fontFamily: 'var(--font-family-title-sm)', fontWeight: 600, color: 'var(--color-text-primary)' }}>{profile.age} yrs</p>
+                      </div>
+                    )}
+                    {profile.height_cm && (
+                      <div>
+                        <p style={{ margin: 0, fontFamily: 'var(--font-family-body-sm)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Height</p>
+                        <p style={{ margin: '4px 0 0', fontFamily: 'var(--font-family-title-sm)', fontWeight: 600, color: 'var(--color-text-primary)' }}>{profile.height_cm} cm</p>
+                      </div>
+                    )}
+                    {profile.weight_kg && (
+                      <div>
+                        <p style={{ margin: 0, fontFamily: 'var(--font-family-body-sm)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Weight</p>
+                        <p style={{ margin: '4px 0 0', fontFamily: 'var(--font-family-title-sm)', fontWeight: 600, color: 'var(--color-text-primary)' }}>{profile.weight_kg} kg</p>
+                      </div>
+                    )}
+                    {profile.dominant_foot && (
+                      <div>
+                        <p style={{ margin: 0, fontFamily: 'var(--font-family-body-sm)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Dominant Foot</p>
+                        <p style={{ margin: '4px 0 0', fontFamily: 'var(--font-family-title-sm)', fontWeight: 600, color: 'var(--color-text-primary)', textTransform: 'capitalize' }}>{profile.dominant_foot}</p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </section>
             )}

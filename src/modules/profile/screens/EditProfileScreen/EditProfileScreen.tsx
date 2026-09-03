@@ -37,6 +37,11 @@ export function EditProfileScreen() {
   const [instagramUsername, setInstagramUsername] = useState(''); // Unmapped
   const [organisationId, setOrganisationId] = useState(''); // Only for Coaches
   
+  // Athlete physical fields
+  const [heightCm, setHeightCm] = useState<string>('');
+  const [weightKg, setWeightKg] = useState<string>('');
+  const [dominantFoot, setDominantFoot] = useState<string>(''); // 'left' | 'right' | 'both' | ''
+
   const [organisersList, setOrganisersList] = useState<{ id: string; full_name: string }[]>([]);
   
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -71,6 +76,16 @@ export function EditProfileScreen() {
           
           if (profileData.organisation_id) {
             setOrganisationId(profileData.organisation_id);
+          }
+          
+          if (profileData.height_cm) {
+            setHeightCm(String(profileData.height_cm));
+          }
+          if (profileData.weight_kg) {
+            setWeightKg(String(profileData.weight_kg));
+          }
+          if (profileData.dominant_foot) {
+            setDominantFoot(profileData.dominant_foot);
           }
         }
         
@@ -143,7 +158,10 @@ export function EditProfileScreen() {
         currentTeam,
         highlightReelUrl,
         instagramUsername,
-        organisationId: organisationId || undefined
+        organisationId: organisationId || undefined,
+        heightCm: heightCm ? parseFloat(heightCm) : null,
+        weightKg: weightKg ? parseFloat(weightKg) : null,
+        dominantFoot: dominantFoot || null,
       });
       
       // 3. Navigate back to profile
@@ -382,6 +400,57 @@ export function EditProfileScreen() {
           </div>
         </div>
       </section>
+
+      {/* Physical Stats Section (Athlete Only) */}
+      {user?.role === UserRole.Athlete && (
+        <section className={styles.section}>
+          <h3 className={styles.sectionHeader}>Physical Stats</h3>
+          <div className={styles.formGrid}>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Height (cm)</label>
+              <input
+                className={styles.input}
+                type="number"
+                min="100"
+                max="250"
+                step="1"
+                placeholder="e.g. 175"
+                value={heightCm}
+                onChange={e => setHeightCm(e.target.value)}
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Weight (kg)</label>
+              <input
+                className={styles.input}
+                type="number"
+                min="30"
+                max="200"
+                step="0.1"
+                placeholder="e.g. 72"
+                value={weightKg}
+                onChange={e => setWeightKg(e.target.value)}
+              />
+            </div>
+            <div className={styles.formGroupFull}>
+              <label className={styles.label}>Dominant Foot</label>
+              <div style={{ display: 'flex', gap: 'var(--spacing-3)', flexWrap: 'wrap' }}>
+                {['left', 'right', 'both'].map(foot => (
+                  <button
+                    key={foot}
+                    type="button"
+                    className={dominantFoot === foot ? styles.saveButton : styles.secondaryButton}
+                    style={{ padding: 'var(--spacing-2) var(--spacing-5)', textTransform: 'capitalize', flex: 'none' }}
+                    onClick={() => setDominantFoot(dominantFoot === foot ? '' : foot)}
+                  >
+                    {foot}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Social & Links Section (Athlete Only) */}
       {user?.role === UserRole.Athlete && (

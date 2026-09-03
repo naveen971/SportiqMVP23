@@ -185,6 +185,7 @@ export interface ProfileData {
   onboarding_complete: boolean;
   avatar_url: string | null;
   organisation_id?: string | null;
+  age: number | null;
 }
 
 export async function getOwnProfile(userId: string): Promise<ProfileData | null> {
@@ -220,6 +221,11 @@ export interface EditProfilePayload {
   
   // New mapped field
   organisationId?: string | null;
+
+  // Athlete physical fields
+  heightCm?: number | null;
+  weightKg?: number | null;
+  dominantFoot?: string | null;
 }
 
 /**
@@ -242,6 +248,9 @@ export async function updateEditProfile(
       primary_position: payload.position || null,
       bio: payload.bio || null,
       organisation_id: payload.organisationId !== undefined ? payload.organisationId : undefined,
+      height_cm: payload.heightCm !== undefined ? payload.heightCm : undefined,
+      weight_kg: payload.weightKg !== undefined ? payload.weightKg : undefined,
+      dominant_foot: payload.dominantFoot !== undefined ? payload.dominantFoot : undefined,
     })
     .eq('id', userId);
 

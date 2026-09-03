@@ -138,6 +138,13 @@ export function OwnProfileScreen() {
             <div className={styles.statsCardGrid}>
               
               <div className={styles.statBox}>
+                <span className={styles.statLabel}>Age</span>
+                <span className={styles.statValue}>
+                  {profile.age ? `${profile.age} yrs` : 'Not set'}
+                </span>
+              </div>
+
+              <div className={styles.statBox}>
                 <span className={styles.statLabel}>Height</span>
                 <span className={styles.statValue}>
                   {profile.height_cm ? `${profile.height_cm} cm` : 'Not set'}
