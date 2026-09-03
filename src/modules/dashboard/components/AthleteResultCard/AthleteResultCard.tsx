@@ -40,7 +40,7 @@ export function AthleteResultCard({ athlete, onViewProfile }: AthleteResultCardP
     : 'A';
 
   return (
-    <div className={styles.card}>
+    <div className={`${styles.card} animate-lift`}>
       <div className={styles.topSection}>
         <div className={styles.badge}>
           <span className="material-symbols-outlined" style={{ fontSize: '14px', marginRight: '4px' }}>trending_up</span> Elite

@@ -95,7 +95,7 @@ export function OwnProfileScreen() {
           )}
 
           <div className={styles.actionButtons}>
-            <button className={styles.primaryButton} onClick={() => navigate(ROUTES.EDIT_PROFILE)}>
+            <button className={`${styles.primaryButton} animate-press`} onClick={() => navigate(ROUTES.EDIT_PROFILE)}>
               Edit Profile
             </button>
             <button className={styles.secondaryButton}>
@@ -173,7 +173,7 @@ export function OwnProfileScreen() {
         {profile.role === UserRole.Athlete ? (
           <section className={styles.section}>
             <button 
-              className={styles.primaryButton}
+              className={`${styles.primaryButton} animate-press`}
               style={{ width: '100%', padding: 'var(--spacing-4)', marginTop: 'var(--spacing-4)' }}
               onClick={() => navigate(ROUTES.STATISTICS)}
             >

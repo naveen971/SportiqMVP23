@@ -39,7 +39,7 @@ export function EventCard({ event }: EventCardProps) {
   const sportDisplay = formatSportName(event.sport);
 
   return (
-    <div className={styles.card}>
+    <div className={`${styles.card} animate-lift`}>
       <div className={styles.content}>
         <div className={styles.header}>
           <h3 className={styles.title}>{event.title}</h3>

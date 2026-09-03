@@ -58,7 +58,7 @@ export function AchievementsGalleryScreen() {
       return (
         <div 
           key={ach.id} 
-          className={`${styles.glassCard} ${styles.featuredCard}`}
+          className={`${styles.glassCard} animate-lift ${styles.featuredCard}`}
           onClick={() => navigate(`/achievements/${ach.id}/edit`)}
         >
           <div className={styles.bgImageContainer}>
@@ -93,7 +93,7 @@ export function AchievementsGalleryScreen() {
       return (
         <div 
           key={ach.id} 
-          className={`${styles.glassCard} ${styles.imageFocusCard}`}
+          className={`${styles.glassCard} animate-lift ${styles.imageFocusCard}`}
           onClick={() => navigate(`/achievements/${ach.id}/edit`)}
         >
           <img src={ach.image_url} alt="" className={styles.imageFocusBg} />
@@ -122,7 +122,7 @@ export function AchievementsGalleryScreen() {
       return (
         <div 
           key={ach.id} 
-          className={`${styles.glassCard} ${styles.metricFocusCard}`}
+          className={`${styles.glassCard} animate-lift ${styles.metricFocusCard}`}
           onClick={() => navigate(`/achievements/${ach.id}/edit`)}
         >
           <div className={styles.flexBetween}>
@@ -149,7 +149,7 @@ export function AchievementsGalleryScreen() {
     return (
       <div 
         key={ach.id} 
-        className={`${styles.glassCard} ${styles.standardCard}`}
+        className={`${styles.glassCard} animate-lift ${styles.standardCard}`}
         onClick={() => navigate(`/achievements/${ach.id}/edit`)}
       >
         <div className={styles.flexBetween} style={{ marginBottom: 'auto' }}>

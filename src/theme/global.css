@@ -1,4 +1,5 @@
 @import './tokens.css';
+@import './animations.css';
 
 *,
 *::before,
@@ -89,43 +90,4 @@ img {
   border-radius: var(--radius-sm);
 }
 
-/* Fade-in Transition */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
 
-.animate-fade-in {
-  animation: fadeIn var(--duration-normal) var(--easing-default);
-}
-
-/* Particle Burst Animation for Like Button */
-@keyframes burst {
-  0% {
-    box-shadow: 
-      0 0 0 0 rgba(var(--color-primary-500-rgb), 0.5),
-      0 0 0 0 rgba(var(--color-primary-500-rgb), 0.5),
-      0 0 0 0 rgba(var(--color-primary-500-rgb), 0.5),
-      0 0 0 0 rgba(var(--color-primary-500-rgb), 0.5),
-      0 0 0 0 rgba(var(--color-primary-500-rgb), 0.5),
-      0 0 0 0 rgba(var(--color-primary-500-rgb), 0.5);
-    transform: scale(0.8);
-  }
-  50% {
-    transform: scale(1.2);
-  }
-  100% {
-    box-shadow: 
-      0 -20px 0 -4px rgba(var(--color-primary-500-rgb), 0),
-      18px -10px 0 -4px rgba(var(--color-primary-500-rgb), 0),
-      18px 10px 0 -4px rgba(var(--color-primary-500-rgb), 0),
-      0 20px 0 -4px rgba(var(--color-primary-500-rgb), 0),
-      -18px 10px 0 -4px rgba(var(--color-primary-500-rgb), 0),
-      -18px -10px 0 -4px rgba(var(--color-primary-500-rgb), 0);
-    transform: scale(1);
-  }
-}
-
-.animate-burst {
-  animation: burst 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}

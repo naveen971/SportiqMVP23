@@ -168,15 +168,43 @@
 }
 
 .likeActive {
-  color: var(--color-primary-600);
-  background-color: var(--color-primary-50);
+  color: var(--color-error);
+  background-color: var(--color-error-50, #fcebeb); /* Optional fallback */
 }
 
 .likeActive:hover {
-  background-color: var(--color-primary-100);
+  background-color: var(--color-error-100, #fad4d4);
 }
 
+.commentArea {
+  padding: var(--spacing-3) var(--spacing-4);
+  background-color: var(--color-neutral-50);
+  border-top: 1px solid var(--color-neutral-100);
+  display: flex;
+  gap: var(--spacing-3);
+  align-items: center;
+}
 
+.commentInput {
+  flex: 1;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-full);
+  padding: var(--spacing-2) var(--spacing-4);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  outline: none;
+}
+.commentInput:focus {
+  border-color: var(--color-primary-400);
+}
+
+.commentSubmitBtn {
+  color: var(--color-primary-600);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
+  padding: var(--spacing-2) var(--spacing-3);
+}
 
 /* Empty State */
 .emptyState {

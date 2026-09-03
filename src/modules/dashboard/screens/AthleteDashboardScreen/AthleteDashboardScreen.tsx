@@ -20,7 +20,11 @@ export function AthleteDashboardScreen() {
   
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  
+  // Optimistic local-only interaction — not persisted, resets on refresh. Real persistence is separate future work (post_likes/post_comments tables).
   const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
+  const [activeCommentPostId, setActiveCommentPostId] = useState<string | null>(null);
+  const [sharedPostId, setSharedPostId] = useState<string | null>(null);
 
   const toggleLike = (postId: string) => {
     setLikedPosts(prev => {
@@ -135,6 +139,9 @@ export function AthleteDashboardScreen() {
           <section className={styles.feedSection}>
             {posts.map((post, index) => {
               const isLiked = likedPosts.has(post.id);
+              const isCommenting = activeCommentPostId === post.id;
+              const isSharing = sharedPostId === post.id;
+              
               return (
               <article 
                 key={post.id} 
@@ -174,26 +181,42 @@ export function AthleteDashboardScreen() {
                 <div className={styles.cardActions}>
                   <div className={styles.actionGroup}>
                     <button 
-                      className={`${styles.actionButton} ${isLiked ? styles.likeActive : ''}`} 
+                      className={`${styles.actionButton} animate-press ${isLiked ? styles.likeActive : ''}`} 
                       onClick={() => toggleLike(post.id)}
                     >
                       <span className={`material-symbols-outlined ${isLiked ? 'animate-burst' : ''}`} style={isLiked ? { fontVariationSettings: "'FILL' 1" } : {}}>
-                        thumb_up
+                        favorite
                       </span>
                       <span>{isLiked ? '1' : '0'}</span>
                     </button>
-                    <button className={styles.actionButton}>
+                    <button 
+                      className={`${styles.actionButton} animate-press`}
+                      onClick={() => setActiveCommentPostId(isCommenting ? null : post.id)}
+                    >
                       <span className="material-symbols-outlined">chat_bubble_outline</span>
                       <span>0</span>
                     </button>
-                    <button className={styles.actionButton}>
+                    <button 
+                      className={`${styles.actionButton} animate-press ${isSharing ? 'animate-pulse' : ''}`}
+                      onClick={() => {
+                        setSharedPostId(post.id);
+                        setTimeout(() => setSharedPostId(null), 300);
+                      }}
+                    >
                       <span className="material-symbols-outlined">share</span>
                     </button>
                   </div>
-                  <button className={styles.actionButton}>
+                  <button className={`${styles.actionButton} animate-press`}>
                     <span className="material-symbols-outlined">bookmark_border</span>
                   </button>
                 </div>
+                
+                {isCommenting && (
+                  <div className={`${styles.commentArea} animate-fade-in`}>
+                    <input type="text" placeholder="Add a comment..." className={styles.commentInput} />
+                    <button className={styles.commentSubmitBtn}>Post</button>
+                  </div>
+                )}
               </article>
               );
             })}
