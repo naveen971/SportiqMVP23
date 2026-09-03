@@ -28,6 +28,12 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  transition: transform var(--duration-normal) var(--easing-default), box-shadow var(--duration-normal) var(--easing-default);
+}
+
+.feedCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }
 
 .cardHeader {
@@ -144,6 +150,15 @@
   font-size: var(--font-size-sm);
   border-radius: var(--radius-full);
   cursor: pointer;
+  transition: background-color var(--duration-fast) var(--easing-default), color var(--duration-fast) var(--easing-default), transform var(--duration-fast) var(--easing-default);
+}
+
+.actionButton:hover {
+  background-color: var(--color-neutral-100);
+}
+
+.actionButton:active {
+  transform: scale(0.95);
 }
 
 .actionButton span:last-child {
@@ -152,8 +167,13 @@
   font-size: var(--font-size-sm);
 }
 
-.actionActive {
+.likeActive {
   color: var(--color-primary-600);
+  background-color: var(--color-primary-50);
+}
+
+.likeActive:hover {
+  background-color: var(--color-primary-100);
 }
 
 

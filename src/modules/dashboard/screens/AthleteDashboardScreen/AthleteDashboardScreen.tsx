@@ -20,6 +20,19 @@ export function AthleteDashboardScreen() {
   
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
+
+  const toggleLike = (postId: string) => {
+    setLikedPosts(prev => {
+      const next = new Set(prev);
+      if (next.has(postId)) {
+        next.delete(postId);
+      } else {
+        next.add(postId);
+      }
+      return next;
+    });
+  };
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -120,8 +133,14 @@ export function AthleteDashboardScreen() {
           </div>
         ) : (
           <section className={styles.feedSection}>
-            {posts.map(post => (
-              <article key={post.id} className={styles.feedCard}>
+            {posts.map((post, index) => {
+              const isLiked = likedPosts.has(post.id);
+              return (
+              <article 
+                key={post.id} 
+                className={`${styles.feedCard} animate-fade-in`} 
+                style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'both' }}
+              >
                 <div className={styles.cardHeader}>
                   <div className={styles.authorInfo}>
                     <div className={styles.avatar}>
@@ -154,9 +173,14 @@ export function AthleteDashboardScreen() {
 
                 <div className={styles.cardActions}>
                   <div className={styles.actionGroup}>
-                    <button className={styles.actionButton}>
-                      <span className="material-symbols-outlined">thumb_up</span>
-                      <span>0</span>
+                    <button 
+                      className={`${styles.actionButton} ${isLiked ? styles.likeActive : ''}`} 
+                      onClick={() => toggleLike(post.id)}
+                    >
+                      <span className={`material-symbols-outlined ${isLiked ? 'animate-burst' : ''}`} style={isLiked ? { fontVariationSettings: "'FILL' 1" } : {}}>
+                        thumb_up
+                      </span>
+                      <span>{isLiked ? '1' : '0'}</span>
                     </button>
                     <button className={styles.actionButton}>
                       <span className="material-symbols-outlined">chat_bubble_outline</span>
@@ -171,7 +195,8 @@ export function AthleteDashboardScreen() {
                   </button>
                 </div>
               </article>
-            ))}
+              );
+            })}
           </section>
         )}
       </main>
