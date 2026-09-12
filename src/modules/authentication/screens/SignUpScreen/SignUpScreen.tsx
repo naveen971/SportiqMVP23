@@ -232,8 +232,8 @@ export function SignUpScreen() {
             </button>
             <p className={styles.termsText}>
               By creating an account, you agree to our{' '}
-              <a href="#" className={styles.termsLink}>Terms of Service</a> and{' '}
-              <a href="#" className={styles.termsLink}>Privacy Policy</a>.
+              <Link to={ROUTES.TERMS} className={styles.termsLink}>Terms of Service</Link> and{' '}
+              <Link to={ROUTES.PRIVACY} className={styles.termsLink}>Privacy Policy</Link>.
             </p>
           </div>
         </form>

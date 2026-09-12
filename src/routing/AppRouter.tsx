@@ -3,7 +3,7 @@ import { ROUTES } from './routes';
 import { ProtectedRoute } from './ProtectedRoute';
 import { OnboardingGate } from './OnboardingGate';
 import { useAuth } from '../core/auth/AuthProvider';
-import { WelcomeScreen, SplashScreen, LoginScreen, SignUpScreen, VerifyEmailScreen, ForgotPasswordScreen } from '../modules/authentication/screens';
+import { WelcomeScreen, SplashScreen, LoginScreen, SignUpScreen, VerifyEmailScreen, ForgotPasswordScreen, PrivacyPolicyScreen, TermsOfServiceScreen } from '../modules/authentication/screens';
 import { SelectSportsScreen, CreateSportsProfileScreen, ProfilePictureUploadScreen, PersonalInformationScreen, PlayingInformationScreen, ProfileCompletionScreen, OwnProfileScreen, AthletePublicProfileScreen, StatisticsScreen, EditProfileScreen, AchievementsGalleryScreen, AchievementForm } from '../modules/profile/screens';
 import { PlaceholderScreen } from '@shared/components/PlaceholderScreen';
 import { AppLayout } from '@shared/layouts/AppLayout';
@@ -118,6 +118,22 @@ export function AppRouter() {
           element={
             <PublicRoute>
               <VerifyEmailScreen />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path={ROUTES.PRIVACY}
+          element={
+            <PublicRoute>
+              <PrivacyPolicyScreen />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path={ROUTES.TERMS}
+          element={
+            <PublicRoute>
+              <TermsOfServiceScreen />
             </PublicRoute>
           }
         />

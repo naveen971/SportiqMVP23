@@ -4,3 +4,5 @@ export { LoginScreen } from './LoginScreen/LoginScreen';
 export { SignUpScreen } from './SignUpScreen/SignUpScreen';
 export { VerifyEmailScreen } from './VerifyEmailScreen/VerifyEmailScreen';
 export { ForgotPasswordScreen } from './ForgotPasswordScreen/ForgotPasswordScreen';
+export { PrivacyPolicyScreen } from './PrivacyPolicyScreen/PrivacyPolicyScreen';
+export { TermsOfServiceScreen } from './TermsOfServiceScreen/TermsOfServiceScreen';
