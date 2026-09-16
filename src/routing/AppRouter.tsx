@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ROUTES } from './routes';
 import { ProtectedRoute } from './ProtectedRoute';
 import { OnboardingGate } from './OnboardingGate';
@@ -60,7 +60,7 @@ export function AppRouter() {
   const { isAuthenticated } = useAuth();
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         {/* Redirect Root to Splash if not authenticated, otherwise Role-Aware Dashboard is loaded */}
         <Route
@@ -308,7 +308,7 @@ export function AppRouter() {
           element={<PlaceholderScreen title="Not Found" description="This page does not exist." />}
         />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
